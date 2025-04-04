@@ -51,4 +51,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials")
 	UMaterialParameterCollection* MpcMask;
+
+private:
+	int32 StepsCounter;
+	int32 StepsToBattle;
+	int EncountersNumber;
+	FVector LastPosition;
+	
+
 };

@@ -5,6 +5,9 @@
 #include "Materials/MaterialParameterCollection.h"
 #include "Materials/MaterialParameterCollectionInstance.h"
 #include "Engine/World.h"
+
+# define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, TEXT(text))
+
 #include "EnhancedInputComponent.h"
 
 AMyPlayerCharacter::AMyPlayerCharacter() {
@@ -26,6 +29,12 @@ void AMyPlayerCharacter::BeginPlay() {
 
 	Super::BeginPlay();
 
+	// Initialize the variables needed to check for battles
+	StepsCounter = 0;
+	StepsToBattle = FMath::RandRange(10, 50);
+	LastPosition = GetActorLocation();
+	EncountersNumber = 0;
+
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController) {
 		
@@ -46,6 +55,20 @@ void AMyPlayerCharacter::Tick(float DeltaTime) {
 	UMaterialParameterCollectionInstance* MPCInstance = GetWorld()->GetParameterCollectionInstance(MpcMask);
 	FVector PlayerLocation = GetActorLocation();
 
+	// Add a Step and checks for battle
+	float Distance = FVector::Dist(PlayerLocation, LastPosition);
+	if (Distance > 100.0f) {
+		StepsCounter++;
+		print("Step Taken");
+		LastPosition = PlayerLocation;
+		if (StepsCounter == StepsToBattle) {
+			EncountersNumber += 10;
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Battle Started"));
+			StepsToBattle = FMath::RandRange(10, 50 + EncountersNumber);
+			StepsCounter = 0;
+		}
+	}
+	
 	// Update the player position every frame for the mask material function
 	MPCInstance->SetVectorParameterValue("PlayerLocation", PlayerLocation);
 
