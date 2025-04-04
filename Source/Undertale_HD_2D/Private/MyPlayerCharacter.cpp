@@ -7,7 +7,7 @@
 #include "Engine/World.h"
 
 # define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, TEXT(text))
-
+# define printFstring(text, fstring) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Magenta, FString::Printf(TEXT(text), (fstring)))
 #include "EnhancedInputComponent.h"
 
 AMyPlayerCharacter::AMyPlayerCharacter() {
@@ -59,12 +59,12 @@ void AMyPlayerCharacter::Tick(float DeltaTime) {
 	float Distance = FVector::Dist(PlayerLocation, LastPosition);
 	if (Distance > 100.0f) {
 		StepsCounter++;
-		print("Step Taken");
+		printFstring("Steps Taken: %s", *FString::FromInt(StepsCounter));
 		LastPosition = PlayerLocation;
 		if (StepsCounter == StepsToBattle) {
 			EncountersNumber += 10;
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Battle Started"));
-			StepsToBattle = FMath::RandRange(10, 50 + EncountersNumber);
+			StepsToBattle = FMath::RandRange(10 + EncountersNumber / 2, 50 + EncountersNumber);
 			StepsCounter = 0;
 		}
 	}
