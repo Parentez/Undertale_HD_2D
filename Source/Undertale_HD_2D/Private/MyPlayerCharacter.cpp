@@ -5,6 +5,7 @@
 #include "Materials/MaterialParameterCollection.h"
 #include "Materials/MaterialParameterCollectionInstance.h"
 #include "Engine/World.h"
+#include "Blueprint/UserWidget.h"
 
 # define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, TEXT(text))
 # define printFstring(text, fstring) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Magenta, FString::Printf(TEXT(text), (fstring)))
@@ -34,6 +35,7 @@ void AMyPlayerCharacter::BeginPlay() {
 	StepsToBattle = FMath::RandRange(10, 50);
 	LastPosition = GetActorLocation();
 	EncountersNumber = 0;
+	bInCombat = false;
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController) {
@@ -55,23 +57,22 @@ void AMyPlayerCharacter::Tick(float DeltaTime) {
 	UMaterialParameterCollectionInstance* MPCInstance = GetWorld()->GetParameterCollectionInstance(MpcMask);
 	FVector PlayerLocation = GetActorLocation();
 
-	// Add a Step and checks for battle
-	float Distance = FVector::Dist(PlayerLocation, LastPosition);
-	if (Distance > 100.0f) {
-		StepsCounter++;
-		printFstring("Steps Taken: %s", *FString::FromInt(StepsCounter));
-		LastPosition = PlayerLocation;
-		if (StepsCounter == StepsToBattle) {
-			EncountersNumber += 10;
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Battle Started"));
-			StepsToBattle = FMath::RandRange(10 + EncountersNumber / 2, 50 + EncountersNumber);
-			StepsCounter = 0;
-		}
-	}
-	
 	// Update the player position every frame for the mask material function
 	MPCInstance->SetVectorParameterValue("PlayerLocation", PlayerLocation);
 
+	// Add a Step and checks for battle
+	if (!bInCombat) {
+		float Distance = FVector::Dist(PlayerLocation, LastPosition);
+		if (Distance > 100.0f) {
+			StepsCounter++;
+			printFstring("Steps Taken: %s", *FString::FromInt(StepsCounter));
+			LastPosition = PlayerLocation;
+			if (StepsCounter == StepsToBattle) {
+				StartBattle();
+			}
+		}
+	}
+	
 }
 
 void AMyPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
@@ -86,18 +87,34 @@ void AMyPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 void AMyPlayerCharacter::Move(const FInputActionValue& Value) {
 	
-	FVector2D MovementVector = Value.Get<FVector2D>();
+	if (!bInCombat) {  // stop the player movement if a battle starts 
 
-	if (Controller) {
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		FVector2D MovementVector = Value.Get<FVector2D>();
 
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		if (Controller) {
+			const FRotator Rotation = Controller->GetControlRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+			const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 
-		AddMovementInput(ForwardDirection, MovementVector.X);
-		AddMovementInput(RightDirection, MovementVector.Y);
+			const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+			AddMovementInput(ForwardDirection, MovementVector.X);
+			AddMovementInput(RightDirection, MovementVector.Y);
+		}
 	}
 
+}
+
+void AMyPlayerCharacter::StartBattle() {
+	EncountersNumber += 10;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Battle Started"));
+	StepsToBattle = FMath::RandRange(10 + EncountersNumber, 50 + FMath::FloorToInt(EncountersNumber * 1.25f));
+	StepsCounter = 0;
+	bInCombat = true;
+	
+
+	// Show widgtes
+	HeartWidget = CreateWidget<UUserWidget>(GetWorld(), HeartWidgetClass);
+	HeartWidget->AddToViewport();
 }

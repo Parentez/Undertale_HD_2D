@@ -52,11 +52,18 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials")
 	UMaterialParameterCollection* MpcMask;
 
+	UFUNCTION(BlueprintCallable, Category = "Battle")
+	void StartBattle();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "UI")
+	TSubclassOf<UUserWidget> HeartWidgetClass;
+	UUserWidget* HeartWidget;
+
 private:
-	int32 StepsCounter;
-	int32 StepsToBattle;
+	int StepsCounter;
+	int StepsToBattle;
 	int EncountersNumber;
 	FVector LastPosition;
-	
+	bool bInCombat;
 
 };
