@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -10,6 +8,7 @@
 
 class UInputMappingContext;
 class UInputAction;
+class ACameraActor;
 
 UCLASS()
 class UNDERTALE_HD_2D_API AMyPlayerCharacter : public APaperZDCharacter
@@ -27,8 +26,7 @@ public:
 	// Called to bind functionality to inputs
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override; 
 
-	// Called each frame to chek what animation needs to be used
-	void UpdateAnimation();
+	bool bInCombat;
 
 protected:
 
@@ -55,6 +53,18 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Battle")
 	void StartBattle();
 
+	UFUNCTION(BlueprintCallable, Category = "Swap Player")
+	void SwapPlayerControl();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fixed Heart Camera")
+	ACameraActor* FixedCamera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn heart point")
+	AActor* HeartSpawn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target Player Swap")
+	TSubclassOf<APaperZDCharacter> HeartPlayerClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "UI")
 	TSubclassOf<UUserWidget> HeartWidgetClass;
 	UUserWidget* HeartWidget;
@@ -64,6 +74,5 @@ private:
 	int StepsToBattle;
 	int EncountersNumber;
 	FVector LastPosition;
-	bool bInCombat;
 
 };

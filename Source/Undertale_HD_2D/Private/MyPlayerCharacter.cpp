@@ -2,6 +2,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Camera/CameraActor.h"
+#include "Kismet/GameplayStatics.h" 
 #include "Materials/MaterialParameterCollection.h"
 #include "Materials/MaterialParameterCollectionInstance.h"
 #include "Engine/World.h"
@@ -36,6 +38,25 @@ void AMyPlayerCharacter::BeginPlay() {
 	LastPosition = GetActorLocation();
 	EncountersNumber = 0;
 	bInCombat = false;
+
+	if (!FixedCamera) {
+		TArray<AActor*> FoundCameras;
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("FixedBattleCamera"), FoundCameras);
+		if (FoundCameras.Num() > 0) {
+			FixedCamera = Cast<ACameraActor>(FoundCameras[0]);
+		}
+
+	}
+
+	// Automatically find HeartSpawm by tag
+	if (!HeartSpawn) {
+		TArray<AActor*> FoundSpawns;
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("HeartSpawn"), FoundSpawns);
+		if (FoundSpawns.Num() > 0) {
+			HeartSpawn = FoundSpawns[0];
+		}
+	}
+
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController) {
@@ -113,8 +134,35 @@ void AMyPlayerCharacter::StartBattle() {
 	StepsCounter = 0;
 	bInCombat = true;
 	
+	SwapPlayerControl();
 
 	// Show widgtes
 	HeartWidget = CreateWidget<UUserWidget>(GetWorld(), HeartWidgetClass);
 	HeartWidget->AddToViewport();
 }
+
+void AMyPlayerCharacter::SwapPlayerControl() {
+	
+	if (!HeartPlayerClass || !HeartSpawn || !FixedCamera) {
+		UE_LOG(LogTemp, Error, TEXT("Missing data in SwapPlayerControl. HeartPlayerClass: %s, HeartSpawn: %s, FixedCamera: %s"),
+			*GetNameSafe(HeartPlayerClass), *GetNameSafe(HeartSpawn), *GetNameSafe(FixedCamera));
+		return;
+	}
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
+	FVector SpawnLocation = HeartSpawn->GetActorLocation();
+	FRotator SpawnRotation = HeartSpawn->GetActorRotation();
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = PlayerController;
+
+	APaperZDCharacter* HeartPlayer = GetWorld()->SpawnActor<APaperZDCharacter>(HeartPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+
+	if (HeartPlayer && FixedCamera) {
+		
+		PlayerController->Possess(HeartPlayer);
+		PlayerController->SetViewTarget(FixedCamera);
+
+	}
+}
+
