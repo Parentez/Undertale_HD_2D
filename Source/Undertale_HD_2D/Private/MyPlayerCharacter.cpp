@@ -57,6 +57,14 @@ void AMyPlayerCharacter::BeginPlay() {
 		}
 	}
 
+	if (!BattleManager) {
+		TArray<AActor*> FoundManager;
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("BP_BattleManager"), FoundManager);
+		if (FoundManager.Num() > 0) {
+			BattleManager = FoundManager[0];
+		}
+	}
+
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController) {
@@ -163,6 +171,13 @@ void AMyPlayerCharacter::SwapPlayerControl() {
 		PlayerController->Possess(HeartPlayer);
 		PlayerController->SetViewTarget(FixedCamera);
 
+	}
+
+	FOutputDeviceNull ar;
+	const FString command = FString::Printf(TEXT("HandleState"));
+	if (BattleManager) {
+		BattleManager->CallFunctionByNameWithArguments(*command, ar, NULL, true);
+		
 	}
 }
 

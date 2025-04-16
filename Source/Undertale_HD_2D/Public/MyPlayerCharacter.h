@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "PaperZDCharacter.h"
 #include "InputActionValue.h"
+#include "Misc/OutputDeviceNull.h"
 #include "Materials/MaterialParameterCollection.h"
 #include "MyPlayerCharacter.generated.h"
 
@@ -64,6 +65,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target Player Swap")
 	TSubclassOf<APaperZDCharacter> HeartPlayerClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle")
+	AActor* BattleManager;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "UI")
 	TSubclassOf<UUserWidget> HeartWidgetClass;
