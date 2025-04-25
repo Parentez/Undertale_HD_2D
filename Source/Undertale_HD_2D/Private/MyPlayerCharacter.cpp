@@ -195,5 +195,6 @@ void AMyPlayerCharacter::ExitCombat() {
 		CurrentHeart = nullptr;
 	}
 
+	HeartWidget->RemoveFromParent();
 	bInCombat = false;
 }

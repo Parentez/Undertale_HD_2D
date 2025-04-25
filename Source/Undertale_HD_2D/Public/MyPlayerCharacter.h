@@ -36,6 +36,7 @@ protected:
 	
 	void Move(const FInputActionValue& Value);
 
+	UFUNCTION(BlueprintCallable, Category = "Exit Combat")
 	void ExitCombat();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
