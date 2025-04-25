@@ -180,4 +180,18 @@ void AMyPlayerCharacter::SwapPlayerControl() {
 		
 	}
 }
+void AMyPlayerCharacter::ExitCombat() {
+	APlayerController* PlayerController = Cast < APlayerController < (UGameplayStatics::Get(PlayerController(GetWorld(), 0));
 
+	if (!PlayerController || !this) return;
+
+	PlayerController->Possess(this);
+	PlayerController->SetViewTarget(this);
+
+	if (IsValid(CurrentHeart)) {
+		CurrentHeart->Destroy();
+		CurrentHeart = nullptr;
+	}
+
+	bInCombat  = false;
+}
