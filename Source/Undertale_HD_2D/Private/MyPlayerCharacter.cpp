@@ -110,6 +110,7 @@ void AMyPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (EnhancedInputComponent) {
+		EnhancedInputComponent->BindAction(ExitCombatt, ETriggerEvent::Triggered, this, &AMyPlayerCharacter::ExitCombat);
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMyPlayerCharacter::Move);
 	}
 }
@@ -170,6 +171,7 @@ void AMyPlayerCharacter::SwapPlayerControl() {
 		
 		PlayerController->Possess(HeartPlayer);
 		PlayerController->SetViewTarget(FixedCamera);
+		CurrentHeart = HeartPlayer;
 
 	}
 
@@ -181,7 +183,7 @@ void AMyPlayerCharacter::SwapPlayerControl() {
 	}
 }
 void AMyPlayerCharacter::ExitCombat() {
-	APlayerController* PlayerController = Cast < APlayerController < (UGameplayStatics::Get(PlayerController(GetWorld(), 0));
+	APlayerController* PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 	if (!PlayerController || !this) return;
 
@@ -193,5 +195,5 @@ void AMyPlayerCharacter::ExitCombat() {
 		CurrentHeart = nullptr;
 	}
 
-	bInCombat  = false;
+	bInCombat = false;
 }

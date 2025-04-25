@@ -36,6 +36,8 @@ protected:
 	
 	void Move(const FInputActionValue& Value);
 
+	void ExitCombat();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	class UCameraComponent* Camera;
 
@@ -72,6 +74,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "UI")
 	TSubclassOf<UUserWidget> HeartWidgetClass;
 	UUserWidget* HeartWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
+	UInputAction* ExitCombatt;
+
+	UPROPERTY()
+	APaperZDCharacter* CurrentHeart;
 
 private:
 	int StepsCounter;
