@@ -189,6 +189,7 @@ void AMyPlayerCharacter::ExitCombat() {
 
 	PlayerController->Possess(this);
 	PlayerController->SetViewTarget(this);
+	PlayerController->SetControlRotation(Camera->GetComponentRotation());
 
 	if (IsValid(CurrentHeart)) {
 		CurrentHeart->Destroy();
