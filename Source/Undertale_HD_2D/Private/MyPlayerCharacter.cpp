@@ -1,8 +1,12 @@
 #include "MyPlayerCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/PlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraActor.h"
+#include "Components/SceneCaptureComponent2D.h"
+#include "Engine/TextureRenderTarget2D.h"
+#include "Components/Image.h"
 #include "Kismet/GameplayStatics.h" 
 #include "Materials/MaterialParameterCollection.h"
 #include "Materials/MaterialParameterCollectionInstance.h"
@@ -72,10 +76,11 @@ void AMyPlayerCharacter::BeginPlay() {
 		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		if (Subsystem && DefaultMappingContext) {
 
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);	
 		}
 		
 	}
+	
 }
 
 void AMyPlayerCharacter::Tick(float DeltaTime) {
@@ -136,6 +141,7 @@ void AMyPlayerCharacter::Move(const FInputActionValue& Value) {
 
 }
 
+// Swap from the 3d world to the battle box
 void AMyPlayerCharacter::StartBattle() {
 	EncountersNumber += 10;
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Battle Started"));
@@ -143,13 +149,13 @@ void AMyPlayerCharacter::StartBattle() {
 	StepsCounter = 0;
 	bInCombat = true;
 	
-	SwapPlayerControl();
+	SceneTransition();
 
-	// Show widgtes
-	HeartWidget = CreateWidget<UUserWidget>(GetWorld(), HeartWidgetClass);
-	HeartWidget->AddToViewport();
+	//SwapPlayerControl();
+
 }
 
+// Swap to control the heart
 void AMyPlayerCharacter::SwapPlayerControl() {
 	
 	if (!HeartPlayerClass || !HeartSpawn || !FixedCamera) {
@@ -157,7 +163,7 @@ void AMyPlayerCharacter::SwapPlayerControl() {
 			*GetNameSafe(HeartPlayerClass), *GetNameSafe(HeartSpawn), *GetNameSafe(FixedCamera));
 		return;
 	}
-
+	
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
 	FVector SpawnLocation = HeartSpawn->GetActorLocation();
@@ -181,7 +187,26 @@ void AMyPlayerCharacter::SwapPlayerControl() {
 		BattleManager->CallFunctionByNameWithArguments(*command, ar, NULL, true);
 		
 	}
+	Camera->SetFieldOfView(90);
 }
+
+void AMyPlayerCharacter::SceneTransition() {
+
+	ZoomTransition();
+	GetWorld()->GetTimerManager().SetTimer(FadeTimer, this, &AMyPlayerCharacter::ShowFadeWidget, 1.5f, false);
+	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AMyPlayerCharacter::SwapPlayerControl, 2.0f, false);
+}
+
+void AMyPlayerCharacter::ShowFadeWidget() {
+	FadeWidget = CreateWidget<UUserWidget>(GetWorld(), FadeTransitionClass);
+	if (FadeWidget) {
+		FadeWidget->AddToViewport(120);
+		FOutputDeviceNull Ar;
+		FadeWidget->CallFunctionByNameWithArguments(TEXT("Fade"), Ar, nullptr, true);
+	}
+}
+
+// Go back to the 3d world from combat
 void AMyPlayerCharacter::ExitCombat() {
 	APlayerController* PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
@@ -195,7 +220,5 @@ void AMyPlayerCharacter::ExitCombat() {
 		CurrentHeart->Destroy();
 		CurrentHeart = nullptr;
 	}
-
-	HeartWidget->RemoveFromParent();
 	bInCombat = false;
 }

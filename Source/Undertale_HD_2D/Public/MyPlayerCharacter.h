@@ -39,6 +39,21 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Exit Combat")
 	void ExitCombat();
 
+	UFUNCTION(BlueprintCallable, Category = "Battle")
+	void StartBattle();
+
+	UFUNCTION(BlueprintCallable, Category = "Swap Player")
+	void SwapPlayerControl();
+	
+	UFUNCTION(BlueprintCallable, Category = "Combat Transition")
+	void SceneTransition();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Combat Transition")
+	void ZoomTransition();
+
+	UFUNCTION()
+	void ShowFadeWidget();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	class UCameraComponent* Camera;
 
@@ -54,12 +69,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials")
 	UMaterialParameterCollection* MpcMask;
 
-	UFUNCTION(BlueprintCallable, Category = "Battle")
-	void StartBattle();
-
-	UFUNCTION(BlueprintCallable, Category = "Swap Player")
-	void SwapPlayerControl();
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fixed Heart Camera")
 	ACameraActor* FixedCamera;
 
@@ -72,9 +81,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle")
 	AActor* BattleManager;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "UI")
-	TSubclassOf<UUserWidget> HeartWidgetClass;
-	UUserWidget* HeartWidget;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Transition")
+	TSubclassOf<UUserWidget> FadeTransitionClass;
+	UUserWidget* FadeWidget;
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
 	UInputAction* ExitCombatt;
@@ -87,5 +97,6 @@ private:
 	int StepsToBattle;
 	int EncountersNumber;
 	FVector LastPosition;
-
+	FTimerHandle TransitionTimer;
+	FTimerHandle FadeTimer;
 };
