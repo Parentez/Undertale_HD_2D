@@ -54,6 +54,15 @@ protected:
 	UFUNCTION()
 	void ShowFadeWidget();
 	
+	UFUNCTION(BlueprintCallable, Category = "Swap Player")
+	void SpawnHeart();
+
+	UFUNCTION(BlueprintCallable, Category = "Swap Player")
+	void HideHeart();
+
+	UFUNCTION(BlueprintCallable, Category = "Swap Player")
+	void ShowHeart();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	class UCameraComponent* Camera;
 

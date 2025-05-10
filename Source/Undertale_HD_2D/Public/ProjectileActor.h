@@ -24,6 +24,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	FVector Direction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	int ProjectileDamage = 10;
 
 protected:
 	// Called when the game starts or when spawned

@@ -159,27 +159,10 @@ void AMyPlayerCharacter::StartBattle() {
 void AMyPlayerCharacter::SwapPlayerControl() {
 	
 	if (!HeartPlayerClass || !HeartSpawn || !FixedCamera) {
-		UE_LOG(LogTemp, Error, TEXT("Missing data in SwapPlayerControl. HeartPlayerClass: %s, HeartSpawn: %s, FixedCamera: %s"),
-			*GetNameSafe(HeartPlayerClass), *GetNameSafe(HeartSpawn), *GetNameSafe(FixedCamera));
 		return;
 	}
-	
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-
-	FVector SpawnLocation = HeartSpawn->GetActorLocation();
-	FRotator SpawnRotation = HeartSpawn->GetActorRotation();
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = PlayerController;
-
-	APaperZDCharacter* HeartPlayer = GetWorld()->SpawnActor<APaperZDCharacter>(HeartPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
-
-	if (HeartPlayer && FixedCamera) {
-		
-		PlayerController->Possess(HeartPlayer);
-		PlayerController->SetViewTarget(FixedCamera);
-		CurrentHeart = HeartPlayer;
-
-	}
+	PlayerController->SetViewTarget(FixedCamera);
 
 	FOutputDeviceNull ar;
 	const FString command = FString::Printf(TEXT("HandleState"));
@@ -188,6 +171,40 @@ void AMyPlayerCharacter::SwapPlayerControl() {
 		
 	}
 	Camera->SetFieldOfView(90);
+}
+
+void AMyPlayerCharacter::SpawnHeart() {
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
+	FVector SpawnLocation = HeartSpawn->GetActorLocation();
+	FRotator SpawnRotation = HeartSpawn->GetActorRotation();
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = PlayerController;
+
+	APaperZDCharacter* HeartPlayer = GetWorld()->SpawnActor<APaperZDCharacter>(HeartPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+	
+	if (HeartPlayer && FixedCamera) {
+		PlayerController->Possess(HeartPlayer);
+		PlayerController->SetViewTarget(FixedCamera);
+		CurrentHeart = HeartPlayer;
+	}
+}
+
+void AMyPlayerCharacter::HideHeart() {
+
+	if (CurrentHeart) {
+		CurrentHeart->SetActorHiddenInGame(true);
+	}
+}
+
+void AMyPlayerCharacter::ShowHeart() {
+
+	if (CurrentHeart) {
+		CurrentHeart->SetActorLocation(HeartSpawn->GetActorLocation());
+		CurrentHeart->SetActorRotation(HeartSpawn->GetActorRotation());
+		CurrentHeart->SetActorHiddenInGame(false);
+	}
 }
 
 void AMyPlayerCharacter::SceneTransition() {

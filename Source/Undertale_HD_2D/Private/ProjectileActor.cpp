@@ -14,8 +14,6 @@ AProjectileActor::AProjectileActor() {
 void AProjectileActor::BeginPlay() {
 	
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("Projectile spawned!"));
-	
 }
 
 // Called every frame
