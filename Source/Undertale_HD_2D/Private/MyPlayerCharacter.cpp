@@ -115,7 +115,7 @@ void AMyPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (EnhancedInputComponent) {
-		EnhancedInputComponent->BindAction(ExitCombatt, ETriggerEvent::Triggered, this, &AMyPlayerCharacter::ExitCombat);
+		//EnhancedInputComponent->BindAction(ExitCombatt, ETriggerEvent::Triggered, this, &AMyPlayerCharacter::ExitCombat);
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMyPlayerCharacter::Move);
 	}
 }
