@@ -25,7 +25,6 @@ void UProjectileSpawnerComponent::FireRadialPattern() {
 			if (Projectile) {
 				
 				Projectile->Direction = Direction;
-				//UE_LOG(LogTemp, Warning, TEXT("Projectile Direction %s"), *Direction.ToString());
 				Projectile->SetLifeSpan(5.0f);
 			}
 

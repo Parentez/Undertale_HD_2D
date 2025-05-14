@@ -21,7 +21,7 @@ public:
 	TSubclassOf<AProjectileActor> ProjectileClass;
 
 	UPROPERTY(EditAnywhere, Category = "Projectile")
-	int32 ProjectileCount = 12;
+	int ProjectileCount = 12;
 
 	UPROPERTY(EditAnywhere, Category = "Projectile")
 	float SpreadAngle = 360.0f;

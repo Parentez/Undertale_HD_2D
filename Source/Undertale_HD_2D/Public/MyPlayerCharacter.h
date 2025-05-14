@@ -28,6 +28,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override; 
 
 	bool bInCombat;
+	
 
 protected:
 
@@ -93,10 +94,26 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Transition")
 	TSubclassOf<UUserWidget> FadeTransitionClass;
 	UUserWidget* FadeWidget;
-	
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats and Flags")
+	int Level = 1;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats and Flags")
+	int EnemiesKilledArea1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats and Flags")
+	int EnemiesKilledArea2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats and Flags")
+	int MaxEnemiesArea1 = 4;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats and Flags")
+	int MaxEnemiesArea2 = 5;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats and Flags")
+	int PlayerAtkDmg = 20;
+
+	/*
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
 	UInputAction* ExitCombatt;
+	*/
 
 	UPROPERTY()
 	APaperZDCharacter* CurrentHeart;
