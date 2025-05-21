@@ -96,17 +96,24 @@ void AMyPlayerCharacter::Tick(float DeltaTime) {
 
 	// Add a Step and checks for battle
 	if (!bInCombat) {
-		float Distance = FVector::Dist(PlayerLocation, LastPosition);
-		if (Distance > 100.0f) {
-			StepsCounter++;
-			printFstring("Steps Taken: %s", *FString::FromInt(StepsCounter));
-			LastPosition = PlayerLocation;
-			if (StepsCounter == StepsToBattle) {
-				StartBattle();
+		if (!bInVillage) {
+			float Distance = FVector::Dist(PlayerLocation, LastPosition);
+			if (Distance > 100.0f) {
+				StepsCounter++;
+				printFstring("Steps Taken: %s", *FString::FromInt(StepsCounter));
+				LastPosition = PlayerLocation;
+				if (StepsCounter == StepsToBattle) {
+					if (EnemiesKilledArea1 != MaxEnemiesArea1) {
+						StartBattle();
+					}
+					else {
+						SwapToNoEnemiesLeft();
+						//StartBattle();
+					}
+				}
 			}
 		}
 	}
-	
 }
 
 void AMyPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
@@ -171,6 +178,35 @@ void AMyPlayerCharacter::SwapPlayerControl() {
 		
 	}
 	Camera->SetFieldOfView(90);
+}
+
+void AMyPlayerCharacter::SwapToNoEnemiesLeft() {
+	EncountersNumber += 10;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("No enemy left"));
+	StepsToBattle = FMath::RandRange(10 + EncountersNumber, 50 + FMath::FloorToInt(EncountersNumber * 1.25f));
+	StepsCounter = 0;
+	bInCombat = true;
+
+	ZoomTransition();
+	GetWorld()->GetTimerManager().SetTimer(FadeTimer, this, &AMyPlayerCharacter::ShowFadeWidget, 1.5f, false);
+	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AMyPlayerCharacter::NoEnemyState, 2.0f, false);
+}
+
+void AMyPlayerCharacter::NoEnemyState() {
+
+	if (!HeartPlayerClass || !HeartSpawn || !FixedCamera) {
+		return;
+	}
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	PlayerController->SetViewTarget(FixedCamera);
+
+	FOutputDeviceNull ar;
+	const FString command = FString::Printf(TEXT("HandleState"));
+	if (BattleManager) {
+		BattleManager->CallFunctionByNameWithArguments(*command, ar, NULL, true);
+	}
+	Camera->SetFieldOfView(90);
+
 }
 
 void AMyPlayerCharacter::SpawnHeart() {

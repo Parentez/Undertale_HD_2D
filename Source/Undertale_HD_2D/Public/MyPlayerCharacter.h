@@ -64,6 +64,12 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Swap Player")
 	void ShowHeart();
 
+	UFUNCTION(BlueprintCallable, Category = "Swap Player")
+	void SwapToNoEnemiesLeft();
+
+	UFUNCTION(BlueprintCallable, Category = "Swap Player")
+	void NoEnemyState();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	class UCameraComponent* Camera;
 
@@ -109,6 +115,15 @@ protected:
 	int MaxEnemiesArea2 = 5;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats and Flags")
 	int PlayerAtkDmg = 20;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats and Flags")
+	bool bInVillage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats and Flags")
+	bool bInArea1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats and Flags")
+	bool bInArea2;
 
 	/*
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
