@@ -182,7 +182,7 @@ void AMyPlayerCharacter::SwapPlayerControl() {
 
 void AMyPlayerCharacter::SwapToNoEnemiesLeft() {
 	EncountersNumber += 10;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("No enemy left"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("No enemy left"));
 	StepsToBattle = FMath::RandRange(10 + EncountersNumber, 50 + FMath::FloorToInt(EncountersNumber * 1.25f));
 	StepsCounter = 0;
 	bInCombat = true;
