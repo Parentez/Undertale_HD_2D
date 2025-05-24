@@ -29,4 +29,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void FireRadialPattern();
 
+	UFUNCTION(BlueprintCallable, Category = "Projectile")
+	void FallingRocks(float LineLength, int32 Count, float Duration);
 };
