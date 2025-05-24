@@ -93,7 +93,7 @@ void AMyPlayerCharacter::Tick(float DeltaTime) {
 
 	// Update the player position every frame for the mask material function
 	MPCInstance->SetVectorParameterValue("PlayerLocation", PlayerLocation);
-
+	 
 	// Add a Step and checks for battle
 	if (!bInCombat) {
 		if (!bInVillage) {
@@ -102,8 +102,8 @@ void AMyPlayerCharacter::Tick(float DeltaTime) {
 				StepsCounter++;
 				printFstring("Steps Taken: %s", *FString::FromInt(StepsCounter));
 				LastPosition = PlayerLocation;
-				if (StepsCounter == StepsToBattle) {
-					if (EnemiesKilledArea1 != MaxEnemiesArea1) {
+				if (StepsCounter != StepsToBattle) {
+					if (EnemiesKilledArea1 < MaxEnemiesArea1) {
 						StartBattle();
 					}
 					else {
