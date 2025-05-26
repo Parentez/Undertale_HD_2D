@@ -102,8 +102,8 @@ void AMyPlayerCharacter::Tick(float DeltaTime) {
 				StepsCounter++;
 				printFstring("Steps Taken: %s", *FString::FromInt(StepsCounter));
 				LastPosition = PlayerLocation;
-				if (StepsCounter != StepsToBattle) {
-					if (EnemiesKilledArea1 < MaxEnemiesArea1) {
+				if (StepsCounter == StepsToBattle) {
+					if (EnemiesKilledArea1 != MaxEnemiesArea1) {
 						StartBattle();
 					}
 					else {
