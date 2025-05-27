@@ -27,8 +27,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	int ProjectileDamage = 10;
 
+	void TongueAnim(FVector Dir, FVector Origin, float MaxDistance, float TSpeed);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	bool bTongue = false;
+	bool bRetracting = false;
+	FVector StartLocation;
+	float TMaxDistance = 0.0f;
 };

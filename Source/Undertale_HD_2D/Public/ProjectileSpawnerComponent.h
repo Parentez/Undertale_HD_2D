@@ -31,4 +31,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void FallingRocks(float LineLength, int32 Count, float Duration);
+
+	UFUNCTION(BlueprintCallable, Category = "Projectile")
+	void FrogTongue(FVector Dir, float LineLength, int x, int y);
 };
