@@ -177,7 +177,7 @@ void AMyPlayerCharacter::SwapPlayerControl() {
 		BattleManager->CallFunctionByNameWithArguments(*command, ar, NULL, true);
 		
 	}
-	Camera->SetFieldOfView(90);
+	Camera->SetFieldOfView(80);
 }
 
 void AMyPlayerCharacter::SwapToNoEnemiesLeft() {

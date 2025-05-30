@@ -38,14 +38,20 @@ void UProjectileSpawnerComponent::FallingRocks(float LineLength, int32 Count, fl
 
 	FVector Origin = GetOwner()->GetActorLocation();
 	UWorld* World = GetWorld();
+	float LastOffset = LineLength;
 
 	for (int32 i = 0; i < Count; ++i) {
 		float Delay = FMath::FRandRange(0.f, Duration);
 
 		FTimerHandle TimerHandle;
-		World->GetTimerManager().SetTimer(TimerHandle, [this, Origin, LineLength]() {
-
+		World->GetTimerManager().SetTimer(TimerHandle, [this, Origin, LineLength, &LastOffset]() {
+			
+			
 			float Offset = FMath::FRandRange(-LineLength / 2.0f, LineLength / 2.0f);
+			if (LastOffset <= Offset + 20.f && LastOffset >= Offset - 20.f) {
+				Offset -= LastOffset;
+			}
+			LastOffset = Offset;
 			FVector SpawnLocation = Origin + FVector(0.f, Offset, 0.f); 
 			FVector Direction = FVector(-1.f, 0.f, 0.f);
 
