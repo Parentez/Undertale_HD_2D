@@ -9,6 +9,13 @@ UProjectileSpawnerComponent::UProjectileSpawnerComponent() {
 
 }
 
+void UProjectileSpawnerComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+}
+
 void UProjectileSpawnerComponent::FireRadialPattern() {
 
 	if (ProjectileClass) {

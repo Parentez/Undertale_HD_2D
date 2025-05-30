@@ -17,6 +17,8 @@ public:
 	// Sets default values for this component's properties
 	UProjectileSpawnerComponent();
 
+	void EndPlay(const EEndPlayReason::Type EndPlayReason);
+
 	UPROPERTY(EditAnywhere, Category="Projectile")
 	TSubclassOf<AProjectileActor> ProjectileClass;
 
